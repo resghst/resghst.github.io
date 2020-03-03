@@ -325,7 +325,7 @@ var vm = new Vue({
     },
     async getGeo(){
       const latlng = await new Promise(resolve => {
-        map.locate({ setView: true })
+        map.locate({ setView: false })
           .on('locationfound', e => { console.log(e);resolve(e.latlng) })
           .on('locationerror', e => { resolve(L.latLng(DEFAULT_LAT, DEFAULT_LNG)) })
         })
@@ -342,14 +342,6 @@ var vm = new Vue({
         fillOpacity: 0.1,
         radius: 1000
       }).addTo(map)
-      //- L.marker(latlng, {
-      //-   icon: L.icon({
-      //-     iconAnchor: [10, 36],
-      //-     iconSize: [40, 76],
-      //-     iconUrl: 'https://image.flaticon.com/icons/svg/727/727598.svg',
-      //-     popupAnchor: [0, -38]
-      //-   })
-      //- }).addTo(map)
     }
   }
 })
