@@ -329,7 +329,7 @@ var vm = new Vue({
           .on('locationfound', e => { console.log(e);resolve(e.latlng) })
           .on('locationerror', e => { resolve(L.latLng(DEFAULT_LAT, DEFAULT_LNG)) })
         })
-      map.setZoom(DEFAULT_ZOOM)
+      //- map.setZoom(DEFAULT_ZOOM)
       L.circle(latlng, {
         stroke: false,
         fillColor: '#00beff',
