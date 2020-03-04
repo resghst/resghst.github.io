@@ -11,28 +11,28 @@ height: 100%;
 .popup-region{
   width:100%;
   font-family: 'cwTeXYen', sans-serif;
-  color:#1f3c88;
+  //- color:#1f3c88;
 }
 
 .popup-header{
   letter-spacing:4px;
-  font-size: 20px;
+  font-size: 18px;
   font-weight:800;
-  border-bottom: blue solid 4px;
+  //- border-bottom: blue solid 4px;
   text-align:center;
 }
 
 .mask-info{
   letter-spacing: 5px;
   padding-left:10px;
-  font-size:18px;
+  font-size:16px;
   font-weight:800;
   align-self:flex-start;
   margin-top:10px;
 }
 
 .popup-time{
-  font-size:12px;
+  font-size:10px;
   font-weight:600;
   text-align:right;
   align-self:flex-end;
@@ -40,15 +40,16 @@ height: 100%;
 
 .list-group{
   width:90%;
-  height:80px;
+  //- height:80px;
 }
 
 .list-group-item{
   width:50%;
   margin-left:2px;
-  padding:10px 0px 0px 10px !important;
-  border-top-width: 1px !important;
-  border-left-width: 1px !important;
+  padding:0px 0px 0px 10px !important;
+  border:0px !important;
+  //- border-top-width: 1px !important;
+  //- border-left-width: 1px !important;
 }
 
 .list-group-item .mask{
@@ -57,13 +58,12 @@ height: 100%;
 
 .list-group-item .mask .maskcat{
   margin:0px;
-  font-size:20px;
   font-weight:1000;
 }
 
 .real{
   font-weight: 900;
-  font-size: 26px;
+  font-size: 20px;
   align-self: flex-start;
   text-align: center;
 }
@@ -72,39 +72,43 @@ height: 100%;
   display:flex;
   flex-direction:column;
   align-items:center;
-  font-size:18px;
+  font-size:16px;
 }
 
 .popup-from .table td{
   font-size:14px;
-}
-.popup-from .table th{
-  font-size:18px;
+  padding:0px 5px !important;
 }
 
 .popup-from .table th{
-  width:100px;
+  font-size:14px;
   text-align:justify;
   text-justify:distribute-all-lines;/*ie6-8*/
   text-align-last:justify;/* ie9*/
   -moz-text-align-last:justify;/*ff*/
   -webkit-text-align-last:justify;/*chrome 20+*/
-  color:#1f3c88;
-  padding: 3px 5px !important;
+  padding: 1px !important;
+}
+
+.openTime{
+  font-size:14px;
+  text-align:justify;
+  text-justify:distribute-all-lines;/*ie6-8*/
+  text-align-last:justify;/* ie9*/
+  -moz-text-align-last:justify;/*ff*/
+  -webkit-text-align-last:justify;/*chrome 20+*/
+  padding: 1px !important;
 }
 
 .table{
   margin-bottom:0px !important;
 }
 
-.table td{
-  padding: 3px 5px !important;
-}
-
 .getMapDir{
   font-size: 10px !important;
   padding:4px 12px 3px 12px !important;
   height: 50% !important;
+  width:100%;
 }
 
 .getMapDir i{
@@ -113,8 +117,6 @@ height: 100%;
 
 .work-table{
   width:100%;
-  color:#1f3c88;
-  background:#d7f7f5;
   margin-bottom:10px;
   text-align:center;
 }
@@ -136,10 +138,6 @@ height: 100%;
 }
 .work-table .dective:after{
   content:"X";
-}
-#tel{
-  padding-bottom: 0px 2px !important;
-  font-size: 18px;
 }
 .leaflet-control-layers-expanded.leaflet-control{
   width: 125px;
@@ -169,88 +167,69 @@ var LeafIcon = L.Icon.extend({
   }
 });
 
+let popupTemplate = (store)=>{
+  return `
+      <div class='popup-region'>
+        <div class='popup-header'>${store.name}</div>
+        <div class='popup-from'>
+          <table class="table table-borderless">
+            <tbody>
+              <tr>
+                <th scope="row" class="twoWidth">口罩</th>
+                <td>成人　${store.adult}/兒童　${store.child}</td>
+              </tr>
+              <tr>
+                <th scope="row" class="twoWidth">電話</th>
+                <td id="tel"><a href="tel:${store.tel}">${store.tel}</a></td>
+              </tr>
+              <tr>
+                <th scope="row" class="twoWidth">地址</th>
+              </tr>
+              <tr>
+                <td colspan="2" calss="address">${store.address}</td>
+              </tr>
+              <tr>
+                <th class="openTime">開業時間</th>
+              </tr>
+            </tbody>
+          </table>
+          ${opentimeTemplate(store.time)} 
+        </div>
+        <div class="popup-time">更新時間：2020/02/26 19:02:39</div>
+        <button type="button" class="getMapDir btn btn-primary" onclick="window.open('https://www.google.com.tw/maps/search/${store.lat},${store.lng}','_blank')">Google 導航<i class="fas fa-map-marked-alt"></i></button>
+      </div>  
+    `
+}
+
+let opentimeTemplate = (time)=>{
+  let timezone = ['早','中','晚']
+  let outHtmlTable=''
+  for(var i=0; i<=2; i++){
+    outHtmlTable+='<tr><th>'+timezone[i]+'</th>'
+    for(j=0; j<=6; j++){
+      if(time[7*i+j]==1) outHtmlTable+='<td class="active"></td>'
+      else outHtmlTable+='<td class="dective"></td>'
+    }
+    outHtmlTable+='</tr>'
+  }
+  return `
+    <table class="work-table">
+      <tr>
+        <th></th>
+        <th>一</th><th>二</th><th>三</th><th>四</th><th>五</th><th>六</th><th>日</th>
+      </tr>
+      ${outHtmlTable}
+    </table>
+  `
+}
+
 let markerGroup = (stores,iconUrl)=>{
   return _.map( stores, store =>{
     return L.marker([store.lat, store.lng],{
       maxWidth: "auto",
       icon:new LeafIcon({iconUrl})
     })
-    .bindPopup(`
-      <div class='popup-region'>
-        <div class='popup-header'>${store.name}</div>
-        <div class='popup-from'>
-          <div class="mask-info">口罩剩餘數量</div>
-          <ul class="list-group list-group-horizontal">
-            <li class="list-group-item">
-              <div class="mask">
-                <p class="maskcat">成人</p>
-                <div class="real">${store.adult}</div>
-            </li>
-            <li class="list-group-item">
-              <div class="mask">
-                <p class="maskcat">兒童</p>
-                <div class="real">${store.child}</div>
-              </div>
-            </li>
-          </ul>
-          <table class="table table-borderless">
-            <tbody>
-              <tr>
-                <th scope="row">藥局電話</th>
-                <td id="tel"><a href="tel:${store.tel}">${store.tel}</a></td>
-              </tr>
-              <tr>
-                <th scope="row">藥局地址</th>
-                <td><button type="button" class="getMapDir btn btn-primary" onclick="window.open('https://www.google.com.tw/maps/search/${store.lat},${store.lng}','_blank')">Google 導航<i class="fas fa-map-marked-alt"></i></button></td>
-              </tr>
-              <tr>
-                <td colspan="2">${store.address} <a href="https://www.google.com.tw/maps/search/${store.lat},${store.lng}" target="_blank"><i class="fas fa-external-link-alt"></i></a></td>
-              </tr>
-              <tr>
-                <th scope="row">開業時間</th>
-              </tr>
-            </tbody>
-          </table>
-          <table class="work-table">
-            <tr>
-              <th></th>
-              <th>一</th><th>二</th><th>三</th><th>四</th><th>五</th><th>六</th><th>日</th>
-            </tr>
-            <tr>
-              <th>早</th>
-              <td class="active"></td>
-              <td class="dective"></td>
-              <td class="active"></td>
-              <td class="active"></td>
-              <td class="active"></td>
-              <td class="active"></td>
-              <td class="active"></td>
-            </tr>
-            <tr>
-              <th>中</th>
-              <td class="active"></td>
-              <td class="active"></td>
-              <td class="active"></td>
-              <td class="active"></td>
-              <td class="active"></td>
-              <td class="active"></td>
-              <td class="active"></td>
-            </tr>
-            <tr>
-              <th>晚</th>
-              <td class="active"></td>
-              <td class="active"></td>
-              <td class="active"></td>
-              <td class="active"></td>
-              <td class="active"></td>
-              <td class="active"></td>
-              <td class="active"></td>
-            </tr>
-          </table>
-        </div>
-        <div class="popup-time">更新時間：2020/02/26 19:02:39</div>
-      </div>  
-    `) 
+    .bindPopup(popupTemplate(store)) 
   })
 }
 
